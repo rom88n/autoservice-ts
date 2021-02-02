@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './.env' })
+require('dotenv').config({ path: '.env' })
 const withImages = require('next-images')
 const _ = require('lodash')
 
@@ -26,6 +26,6 @@ module.exports = withImages({
     ];
   },
   env: {
-    // 'MAILER_PASSWORD': process.env.MAILER_PASSWORD
+    'API_URL': process.env.API_URL
   }
 })

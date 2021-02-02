@@ -6,9 +6,9 @@ import { MuiThemeProvider, withStyles, createStyles, WithStyles } from '@materia
 import theme from '../config/theme'
 
 // redux
-// import { PersistGate } from 'redux-persist/integration/react'
+import { PersistGate } from 'redux-persist/integration/react'
 // import { persistStore } from 'redux-persist'
-import store from '../store'
+import { store, persistor } from '../store'
 import { Provider } from 'react-redux'
 
 // helpers
@@ -31,8 +31,6 @@ interface Props extends WithStyles<typeof styles> {
   store: any
 }
 
-// const persistor = persistStore(store);
-
 class _App extends App<Props> {
   componentDidMount() {
     // Remove the server-side injected CSS.
@@ -47,6 +45,7 @@ class _App extends App<Props> {
 
     return (
       <Provider store={store}>
+        <PersistGate persistor={persistor}>
           <div className={classes.root}>
             <ReactContext.Provider value={{ mobile: false }}>
               <MuiThemeProvider theme={theme}>
@@ -57,6 +56,7 @@ class _App extends App<Props> {
               </MuiThemeProvider>
             </ReactContext.Provider>
           </div>
+        </PersistGate>
       </Provider>
     )
   }

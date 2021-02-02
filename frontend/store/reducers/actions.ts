@@ -20,9 +20,11 @@ export const set = (accessToken: string): SetAction => {
 export const isFetching = (isFetching: boolean): SetFetcing => {
   return { type: 'SET_FETCHING', isFetching }
 }
+// @ts-ignore
 export const login = (username: string, password: string): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
   // Invoke API
-  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+  return (dispatch: ThunkDispatch<{}, {}, AnyAction>, ...rest): Promise<void> => {
+    console.log(username, rest)
     return new Promise<void>((resolve) => {
       dispatch(isFetching(true))
       console.log('Login in progress')

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main
   },
   paper: {
-    padding: '1rem',
+    padding: '2rem 1rem 1rem',
     minWidth: '300px',
     maxWidth: '520px',
     width: '100%'

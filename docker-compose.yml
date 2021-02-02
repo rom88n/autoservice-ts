@@ -1,0 +1,72 @@
+version: "3.4"
+
+services:
+  autoservice-api:
+    hostname: autoservice-api
+    container_name: autoservice-api
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
+    env_file:
+      - api/.env
+    command: sh -c "yarn start"
+    environment:
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_HOSTNAME=db
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+    ports:
+      - "3030:3030"
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+
+  autoservice-frontend:
+    hostname: autoservice-frontend
+    container_name: autoservice-frontend
+    command: sh -c "yarn start"
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      BACKEND_HTTP_API_ENDPOINT: http://autoservice-app:3030
+    depends_on:
+      - autoservice-api
+    networks:
+      - frontend
+
+  db:
+    container_name: autoservice_db
+    image: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: autoservice-app
+      MONGO_INITDB_ROOT_USERNAME: serviceuser
+      MONGO_INITDB_ROOT_PASSWORD: 12345678
+    networks:
+      - backend
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo db:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./api/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongodb_data_container:/data/db
+    ports:
+      - "27017-27019:27017-27019"
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  mongodb_data_container:
