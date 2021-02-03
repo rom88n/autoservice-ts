@@ -71,9 +71,7 @@ const AppDashboard = ({ children }: React.PropsWithChildren<any>): React.ReactEl
   const user = useSelector((state: RootState): object => state.user)
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(validateUser())
-    }, 1000)
+    dispatch(validateUser())
   }, [])
 
   if (!Object.keys(user).length) return <Spinner/>

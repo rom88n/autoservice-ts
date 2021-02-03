@@ -1,6 +1,7 @@
 // base
 import React from 'react'
 import App from 'next/app'
+import { SnackbarProvider } from 'notistack'
 
 import { MuiThemeProvider, withStyles, createStyles, WithStyles } from '@material-ui/core/styles'
 import theme from '../config/theme'
@@ -12,7 +13,8 @@ import { compose } from 'redux'
 import { Provider } from 'react-redux'
 
 // components
-import Spinner from '../components/Spinner'
+import ShowToast from '../components/ShowToast'
+import GlobalSpinner from '../components/GlobalSpinner'
 import AppBackground from '../components/AppBackground'
 
 // helpers
@@ -50,21 +52,24 @@ class _App extends App<Props> {
 
   render() {
     const { Component, pageProps, router, classes } = this.props
-    const globalLoading = store.getState().application.globalLoading
 
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor}>
+
           <div className={classes.root}>
             <ReactContext.Provider value={{ mobile: false }}>
               <MuiThemeProvider theme={theme}>
-                <AppBackground>
-                  <Component
-                    router={router}
-                    {...pageProps}
-                  />
-                </AppBackground>
-                {globalLoading && (<Spinner/>)}
+                <SnackbarProvider maxSnack={3} autoHideDuration={2000}>
+                  <AppBackground>
+                    <Component
+                      router={router}
+                      {...pageProps}
+                    />
+                  </AppBackground>
+                  <ShowToast/>
+                  <GlobalSpinner/>
+                </SnackbarProvider>
               </MuiThemeProvider>
             </ReactContext.Provider>
           </div>

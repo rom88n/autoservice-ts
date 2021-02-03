@@ -39,6 +39,7 @@
     "next": "^10.0.0",
     "next-images": "^1.6.2",
     "next-redux-wrapper": "^6.0.2",
+    "notistack": "^1.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "redux": "^4.0.5",

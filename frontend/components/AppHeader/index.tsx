@@ -16,7 +16,7 @@ const AppHeader = (): React.ReactElement => {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      header
+
     </div>
   )
 }

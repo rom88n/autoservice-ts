@@ -18,7 +18,9 @@ import Button from '@material-ui/core/Button'
 
 // components
 import SelectComponent from '../../FormComponent/SelectComponent'
+import Spinner from '../../Spinner'
 
+// redux
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../../../store/reducers/user'
 
@@ -49,12 +51,9 @@ interface Users {
 const LoginForm: React.FC<{}> = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { loading, data } = useQuery<Users>(
-    GET_USERS,
-    { variables: { year: 2019 } }
-  );
+  const { loading, data } = useQuery<Users>(GET_USERS, { variables: { year: 2019 } });
 
-  if (loading) return <div>Loading</div>
+  if (loading) return <Spinner/>
 
   const initialValues: MyFormValues = {
     email: _.get(data, 'allUsers.[0].id', ''),

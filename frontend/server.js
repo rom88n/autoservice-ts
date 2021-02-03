@@ -7,7 +7,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const port = 3000;
 
-const apiUrl = `http://${process.env.API}`;
+const apiUrl = `http://${process.env.API_URL}`;
 
 app
   .prepare()

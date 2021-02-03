@@ -4,6 +4,7 @@ import Router from 'next/router'
 import { client } from '../../../config/apollo/apolloClient'
 import { AUTH, VALIDATE } from '../../../config/apollo/queries/auth'
 import ROUTES from '../../../config/routes'
+import { setToastMessage } from '../application'
 
 export interface StateUser {
   token?: string
@@ -32,8 +33,8 @@ export const userReducer = (state: StateUser = initialState, action: Action): St
 
 export const setUser = (user: SetUser | {}): SetUser => ({ type: 'SET_USER', user })
 
-export const loginUser = (email: string, password: string): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
-  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+export const loginUser = (email: string, password: string): ThunkAction<Promise<void | object>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void | object> => {
     try {
       dispatch({ type: 'SET_GLOBAL_LOADING', globalLoading: true })
       const request = await client.mutate({
@@ -42,15 +43,20 @@ export const loginUser = (email: string, password: string): ThunkAction<Promise<
       })
       const result = await request
       const { data: { authenticateUserWithPassword } } = result
+      dispatch({ type: 'SET_GLOBAL_LOADING', globalLoading: false })
 
-      await dispatch(
-        setUser({ ...authenticateUserWithPassword.item, token: authenticateUserWithPassword.token })
-      )
-      await dispatch({ type: 'SET_GLOBAL_LOADING', globalLoading: false })
-      await Router.replace({ pathname: `/${ROUTES.DASHBOARD}` })
+      if (authenticateUserWithPassword) {
+        await Router.replace({ pathname: `/${ROUTES.DASHBOARD}` })
+        dispatch(
+          setUser({ ...authenticateUserWithPassword.item, token: authenticateUserWithPassword.token })
+        )
+      }
+      return authenticateUserWithPassword
     } catch (er) {
       dispatch({ type: 'SET_GLOBAL_LOADING', globalLoading: false })
-      console.log('ERROR')
+      console.error(er)
+      dispatch(setToastMessage({ type: 'error', message: er.toString() }))
+      throw new Error(er)
     }
   }
 }
@@ -64,12 +70,11 @@ export const validateUser = (): (dispatch: ThunkDispatch<{}, {}, AnyAction>) => 
       const result = await request
       const { data: { authenticatedUser } } = result
       if (!authenticatedUser) {
-        dispatch(setUser({}))
+        await dispatch(setUser({}))
         await Router.replace({ pathname: `/${ROUTES.LOGIN}` })
       }
-
     } catch (er) {
-      console.log('ERROR', Router)
+      console.error(er)
     }
   }
 }
