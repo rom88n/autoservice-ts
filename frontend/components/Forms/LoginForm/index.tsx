@@ -12,22 +12,22 @@ import { useQuery } from '@apollo/client';
 import { GET_USERS } from '../../../config/apollo/queries/auth'
 
 // material-ui
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 
 // components
-import SelectComponent from '../../../FormComponent/SelectComponent'
+import SelectComponent from '../../FormComponent/SelectComponent'
 
 import { useDispatch } from 'react-redux'
-import { login } from '../../../store/reducers/actions'
+import { loginUser } from '../../../store/reducers/user'
 
 interface MyFormValues {
-  name: string;
+  email: string;
   password: string;
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(createStyles({
   form: {
     display: 'flex',
     flexDirection: 'column'
@@ -35,10 +35,10 @@ const useStyles = makeStyles({
   margin: {
     margin: '.5rem 0'
   }
-})
+}))
 
 interface User {
-  id: number;
+  email: number;
   name: string;
 }
 
@@ -54,24 +54,19 @@ const LoginForm: React.FC<{}> = () => {
     { variables: { year: 2019 } }
   );
 
-  if (loading) return <div>loading</div>
-
-  const initialName = _.get(data, 'allUsers.[0].id', '')
+  if (loading) return <div>Loading</div>
 
   const initialValues: MyFormValues = {
-    name: initialName,
+    email: _.get(data, 'allUsers.[0].id', ''),
     password: ''
   }
+
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={(values, actions) => {
-        dispatch(login('123', '123'))
-        setTimeout(() => {
-          console.log({ values, actions })
-          alert(JSON.stringify(values, null, 2))
-          actions.setSubmitting(false)
-        }, 2000)
+      onSubmit={async (values, actions) => {
+        await dispatch(loginUser(values.email, values.password))
+        actions.setSubmitting(false)
       }}
     >
       {({
@@ -91,16 +86,16 @@ const LoginForm: React.FC<{}> = () => {
         return (
           <Form className={classes.form}>
             <SelectComponent
-              id="name"
-              name="name"
+              id="email"
+              name="email"
               label={labels.user}
               variant="outlined"
               // error={touched.name && Boolean(errors.name)}
-              value={values.name}
+              value={values.email}
               // className={classes.margin}
               onChange={handleChange}
               fullWidth
-              items={data?.allUsers.map(item => ({ value: item.id, name: item.name }))}
+              items={data?.allUsers.map(item => ({ value: item.email, name: item.name }))}
             />
             <TextField
               id="password"

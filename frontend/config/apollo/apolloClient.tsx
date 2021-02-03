@@ -30,10 +30,10 @@ const defaultOptions: DefaultOptions = {
 //   })
 // }
 
-export default new ApolloClient({
+export const client = new ApolloClient({
   ssrMode: !process.browser,
   link: new HttpLink({
-    uri: `http://${process.env.API_URL}/api`,
+    uri: `http://${process.env.HOST_URL}/api`,
     credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     fetch
   }),

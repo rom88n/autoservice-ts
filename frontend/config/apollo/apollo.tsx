@@ -4,7 +4,7 @@ import { AppContext, AppInitialProps } from 'next/app'
 // import { NextPageContext } from 'next';
 import Head from 'next/head'
 import { ApolloProvider } from '@apollo/react-hooks'
-import globalApolloClient from './apolloClient'
+import { client as globalApolloClient } from './apolloClient'
 import PropTypes from 'prop-types'
 import { Context } from "@apollo/client"
 

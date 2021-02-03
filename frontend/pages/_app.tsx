@@ -7,17 +7,25 @@ import theme from '../config/theme'
 
 // redux
 import { PersistGate } from 'redux-persist/integration/react'
-// import { persistStore } from 'redux-persist'
 import { store, persistor } from '../store'
+import { compose } from 'redux'
 import { Provider } from 'react-redux'
+
+// components
+import Spinner from '../components/Spinner'
+import AppBackground from '../components/AppBackground'
 
 // helpers
 import ReactContext from '../helpers/ReactContext'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '../config/global.css'
 
 const styles = createStyles({
   root: {
+    '& body': {
+      fontSize: '13px'
+    },
     '& button': {
       '&:focus': {
         outline: 'none'
@@ -42,6 +50,7 @@ class _App extends App<Props> {
 
   render() {
     const { Component, pageProps, router, classes } = this.props
+    const globalLoading = store.getState().application.globalLoading
 
     return (
       <Provider store={store}>
@@ -49,10 +58,13 @@ class _App extends App<Props> {
           <div className={classes.root}>
             <ReactContext.Provider value={{ mobile: false }}>
               <MuiThemeProvider theme={theme}>
-                <Component
-                  router={router}
-                  {...pageProps}
-                />
+                <AppBackground>
+                  <Component
+                    router={router}
+                    {...pageProps}
+                  />
+                </AppBackground>
+                {globalLoading && (<Spinner/>)}
               </MuiThemeProvider>
             </ReactContext.Provider>
           </div>
@@ -62,4 +74,6 @@ class _App extends App<Props> {
   }
 }
 
-export default withStyles(styles)(_App)
+export default compose(
+  withStyles(styles)
+)(_App)

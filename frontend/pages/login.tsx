@@ -3,7 +3,7 @@ import * as React from 'react'
 
 // components
 import LoginPage from '../containers/LoginPage'
-import { withApollo } from '../config/apollo'
+import { withApollo } from '../config/apollo/apollo'
 
 function Login() {
   return (

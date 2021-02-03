@@ -23,14 +23,14 @@ app
     });
 
     // Proxy to api server
-    // server.use('/api', (req, res) => {
-    //   proxy.web(req, res, { target: `${apiUrl}/api` })
-    // })
+    server.use('/api', (req, res) => {
+      proxy.web(req, res, { target: `${apiUrl}/api` })
+    })
 
     // Proxy to Keystone
-    // server.use('/admin', (req, res) => {
-    //   proxy.web(req, res, { target: `${apiUrl}/admin` })
-    // })
+    server.use('/admin', (req, res) => {
+      proxy.web(req, res, { target: `${apiUrl}/admin` })
+    })
 
     proxy.on('error', (error, req, res) => {
       if (error.code !== 'ECONNRESET') {

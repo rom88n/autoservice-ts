@@ -13,19 +13,20 @@ module.exports = withImages({
     }
     return config
   },
-  async rewrites() {
-    return [
-      {
-        source: '/admin/:path*',
-        destination: 'http://localhost:3030/admin/:path*'
-      },
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:3030/api/:path*'
-      }
-    ];
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/admin/:path*',
+  //       destination: `http://${process.env.API_URL}/admin/:path*`
+  //     },
+  //     {
+  //       source: '/api/:path*',
+  //       destination: `http://${process.env.API_URL}/api/:path*`
+  //     }
+  //   ];
+  // },
   env: {
-    'API_URL': process.env.API_URL
+    'HOST_URL': process.env.HOST_URL,
+    'API_URL': process.env.API_URL,
   }
 })
